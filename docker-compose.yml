@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  # 1. MongoDB Database (Configured as Replica Set for Prisma)
+  mongodb:
+    image: mongo:7.0
+    container_name: thumbnail_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - thumbnail_network
+
+  # 2. Redis (BullMQ Queue & Socket.io Pub/Sub)
+  redis:
+    image: redis:7-alpine
+    container_name: thumbnail_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - thumbnail_network
+
+  # 3. Express API Server
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    container_name: thumbnail_api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      NODE_ENV: development
+      DATABASE_URL: "mongodb+srv://<db_username>:VK9PkBdbGYoS0Eoj@cluster0.jsgceir.mongodb.net/?appName=Cluster0"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: super_secret_jwt_key_change_in_production_987654321
+      STORAGE_STRATEGY: local
+      UPLOAD_DIR: uploads
+      THUMBNAIL_DIR: thumbnails
+      FRONTEND_URL: "http://localhost:3000"
+    volumes:
+      - media_storage:/app/services/api/uploads
+      - thumbnail_storage:/app/services/api/thumbnails
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - thumbnail_network
+
+  # 4. Background Processing Worker
+  worker:
+    build:
+      context: .
+      dockerfile: services/worker/Dockerfile
+    container_name: thumbnail_worker
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: "mongodb+srv://<db_username>:VK9PkBdbGYoS0Eoj@cluster0.jsgceir.mongodb.net/?appName=Cluster0"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      STORAGE_STRATEGY: local
+      UPLOAD_DIR: /media/uploads
+      THUMBNAIL_DIR: /media/thumbnails
+    volumes:
+      - media_storage:/media/uploads
+      - thumbnail_storage:/media/thumbnails
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - thumbnail_network
+
+  # 5. Next.js Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: services/frontend/Dockerfile
+    container_name: thumbnail_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: "http://localhost:5000"
+      NEXT_PUBLIC_WS_URL: "http://localhost:5000"
+    depends_on:
+      - api
+    networks:
+      - thumbnail_network
+
+volumes:
+  mongo_data:
+  redis_data:
+  media_storage:
+  thumbnail_storage:
+
+networks:
+  thumbnail_network:
+    driver: bridge

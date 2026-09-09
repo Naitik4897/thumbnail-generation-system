@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+  namespace: thumbnail-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: thumbnail-worker
+  template:
+    metadata:
+      labels:
+        app: thumbnail-worker
+    spec:
+      containers:
+        - name: worker
+          image: thumbnail-worker:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1536Mi"
+          env:
+            - name: DATABASE_URL
+              value: "mongodb+srv://<db_username>:VK9PkBdbGYoS0Eoj@cluster0.jsgceir.mongodb.net/?appName=Cluster0"
+            - name: REDIS_HOST
+              value: "redis-service"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: UPLOAD_DIR
+              value: "/media/uploads"
+            - name: THUMBNAIL_DIR
+              value: "/media/thumbnails"
+          volumeMounts:
+            - name: storage
+              mountPath: /media
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: media-storage-pvc

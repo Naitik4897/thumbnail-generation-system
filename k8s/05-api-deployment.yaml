@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  namespace: thumbnail-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: thumbnail-api
+  template:
+    metadata:
+      labels:
+        app: thumbnail-api
+    spec:
+      containers:
+        - name: api
+          image: thumbnail-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PORT
+              value: "5000"
+            - name: DATABASE_URL
+              value: "mongodb+srv://<db_username>:VK9PkBdbGYoS0Eoj@cluster0.jsgceir.mongodb.net/?appName=Cluster0"
+            - name: REDIS_HOST
+              value: "redis-service"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: JWT_SECRET
+              value: "super_secret_jwt_key_change_in_production_987654321"
+          volumeMounts:
+            - name: storage
+              mountPath: /app/services/api/uploads
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: media-storage-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+  namespace: thumbnail-system
+spec:
+  selector:
+    app: thumbnail-api
+  ports:
+    - port: 5000
+      targetPort: 5000

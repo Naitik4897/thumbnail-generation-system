@@ -1,0 +1,25 @@
+{
+  "name": "thumbnail-system-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "dev:api": "turbo run dev --filter=@services/api",
+    "dev:worker": "turbo run dev --filter=@services/worker",
+    "dev:frontend": "turbo run dev --filter=@services/frontend",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean && rimraf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.4",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.2"
+  },
+  "packageManager": "npm@11.15.0"
+}

@@ -1,0 +1,58 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum JobStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model User {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  email     String     @unique
+  password  String?
+  googleId  String?    @unique
+  avatarUrl String?
+  name      String?
+  mediaJobs MediaJob[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model MediaJob {
+  id                      String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId                  String    @db.ObjectId
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  originalFileName        String
+  fileSize                Int
+  mimeType                String
+  mediaType               MediaType
+  originalFilePath        String
+  thumbnailFilePath       String?
+  thumbnailUrl            String?
+  status                  JobStatus @default(QUEUED)
+  progress                Int       @default(0)
+  errorMessage            String?
+  durationInSeconds       Float?
+  extractedFrameTimestamp Float?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@map("media_jobs")
+}
