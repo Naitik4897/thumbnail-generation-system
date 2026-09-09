@@ -11,5 +11,6 @@ build/
 uploads/
 thumbnails/
 coverage/
+*.tsbuildinfo
 .DS_Store
 Thumbs.db

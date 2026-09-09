@@ -14,37 +14,37 @@ Features **Per-User FIFO Concurrency**, **Real-Time WebSocket Progress Streaming
 
 ---
 
-## 📊 1. System Requirements & Feature Verification
+## 📊 1. System Architecture & Features
 
 ### 🛠️ Tech Stack Matrix
 
-| Requirement | Technology | Implementation & Role | Verification Status |
-| :--- | :--- | :--- | :---: |
-| **Backend API** | Node.js / Express.js | Modular REST API with Helmet security, rate limiting, and CORS | ✅ **100% Verified** |
-| **Frontend UI** | Next.js 14 (App Router) | Responsive dashboard with Glassmorphism aesthetic and modals | ✅ **100% Verified** |
-| **Database & ORM** | MongoDB Atlas + Prisma | Indexed `User` and `MediaJob` models with multi-host replica support | ✅ **100% Verified** |
-| **Queue & Broker** | BullMQ + Redis | Distributed queue with producer/consumer architecture & failure retry | ✅ **100% Verified** |
-| **Language & Types** | TypeScript (Strict) | Monorepo-wide strict TypeScript presets (`@repo/types`, `@repo/tsconfig`) | ✅ **100% Verified** |
-| **State Management** | Jotai | Atomic reactive state (`authAtom`, `jobsAtom`, `mediaStatsAtom`, `paginationAtom`) | ✅ **100% Verified** |
-| **Media Processing** | Sharp & Fluent-FFmpeg | Lanczos3 high-clarity 128×128 image crop + 50% midpoint video extractor | ✅ **100% Verified** |
-| **Containerization** | Docker & Kubernetes | Multi-stage Dockerfiles, `docker-compose.yml`, and K8s manifests with HPA | ✅ **100% Verified** |
+| Requirement | Technology | Implementation & Role |
+| :--- | :--- | :--- |
+| **Backend API** | Node.js / Express.js | Modular REST API with Helmet security, rate limiting, and CORS |
+| **Frontend UI** | Next.js 14 (App Router) | Responsive dashboard with Glassmorphism aesthetic and modals |
+| **Database & ORM** | MongoDB Atlas + Prisma | Indexed `User` and `MediaJob` models with multi-host replica support |
+| **Queue & Broker** | BullMQ + Redis | Distributed queue with producer/consumer architecture & failure retry |
+| **Language & Types** | TypeScript (Strict) | Monorepo-wide strict TypeScript presets (`@repo/types`, `@repo/tsconfig`) |
+| **State Management** | Jotai | Atomic reactive state (`authAtom`, `jobsAtom`, `mediaStatsAtom`, `paginationAtom`) |
+| **Media Processing** | Sharp & Fluent-FFmpeg | Lanczos3 high-clarity 128×128 image crop + 50% midpoint video extractor |
+| **Containerization** | Docker & Kubernetes | Multi-stage Dockerfiles, `docker-compose.yml`, and K8s manifests with HPA |
 
 ---
 
 ### 👤 User Stories & Feature Checklist
 
-| User Story / Requirement | Description | Verified Implementation |
-| :--- | :--- | :---: |
-| **Sign Up / Log In** | Email/Password with bcrypt + Google OAuth2 with DB session persistence | ✅ **Fulfilled** |
-| **Multi-File Upload** | Upload multiple images & videos simultaneously with magic-bytes binary validation | ✅ **Fulfilled** |
-| **Immediate Feedback** | Upload endpoint immediately returns `202 Accepted` with queued job IDs | ✅ **Fulfilled** |
-| **Per-User FIFO Lock** | Distributed Redis mutex locks ensure a user's jobs run sequentially one at a time | ✅ **Fulfilled** |
-| **Live Status Transitions** | Real-time WebSocket streaming: `QUEUED` 🟡 ➔ `PROCESSING` 🔵 ➔ `COMPLETED` 🟢 ➔ `FAILED` 🔴 | ✅ **Fulfilled** |
-| **Video Midpoint Frame** | FFprobe probes total video duration and extracts frame at exact 50% timestamp | ✅ **Fulfilled** |
-| **High Clarity 128×128** | Sharp Lanczos3 kernel, unsharp mask, and 4:4:4 chroma subsampling for crisp detail | ✅ **Fulfilled** |
-| **Cloudinary CDN** | Uploads thumbnails to Cloudinary CDN with fallback to local storage | ✅ **Fulfilled** |
-| **Pagination & Global Stats** | Strict 8/16/24 items per page + hero metrics showing overall total library counts | ✅ **Fulfilled** |
-| **Download & Preview** | Direct 128×128 native modal preview and secure tokenized file downloads | ✅ **Fulfilled** |
+| User Story / Requirement | Description |
+| :--- | :--- |
+| **Sign Up / Log In** | Email/Password with bcrypt + Google OAuth2 with DB session persistence |
+| **Multi-File Upload** | Upload multiple images & videos simultaneously with magic-bytes binary validation |
+| **Immediate Feedback** | Upload endpoint immediately returns `202 Accepted` with queued job IDs |
+| **Per-User FIFO Lock** | Distributed Redis mutex locks ensure a user's jobs run sequentially one at a time |
+| **Live Status Transitions** | Real-time WebSocket streaming: `QUEUED` 🟡 ➔ `PROCESSING` 🔵 ➔ `COMPLETED` 🟢 ➔ `FAILED` 🔴 |
+| **Video Midpoint Frame** | FFprobe probes total video duration and extracts frame at exact 50% timestamp |
+| **High Clarity 128×128** | Sharp Lanczos3 kernel, unsharp mask, and 4:4:4 chroma subsampling for crisp detail |
+| **Cloudinary CDN** | Uploads thumbnails to Cloudinary CDN with fallback to local storage |
+| **Pagination & Global Stats** | Strict 8/16/24 items per page + hero metrics showing overall total library counts |
+| **Download & Preview** | Direct 128×128 native modal preview and secure tokenized file downloads |
 
 ---
 
