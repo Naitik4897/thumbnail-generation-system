@@ -12,6 +12,10 @@
     "dev:worker": "turbo run dev --filter=@services/worker",
     "dev:frontend": "turbo run dev --filter=@services/frontend",
     "build": "turbo run build",
+    "build:all": "turbo run build",
+    "start:api": "node services/api/dist/index.js",
+    "start:worker": "node services/worker/dist/index.js",
+    "start:all": "node -e \"require('./services/api/dist/index.js'); require('./services/worker/dist/index.js');\"",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rimraf node_modules"
