@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "prisma generate && tsc",
+    "build": "npm run build --workspace=@repo/types && prisma generate && tsc",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
     "type-check": "tsc --noEmit"
