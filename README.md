@@ -77,7 +77,74 @@ flowchart TD
 
 ---
 
-## 🚀 3. Step-by-Step Developer Setup Guide
+## 📂 3. Project Structure & Architecture Breakdown
+
+```
+thumbnail-generation-system/
+├── packages/
+│   ├── types/                    # Shared TypeScript interfaces, DTOs, Enums & Socket event constants
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── src/index.ts          # MediaJobDTO, JobStatus, UserDTO, Socket events
+│   └── tsconfig/                 # Shared TypeScript compiler presets (base, node, nextjs)
+│       ├── base.json
+│       ├── node.json
+│       └── nextjs.json
+├── services/
+│   ├── api/                      # Express.js REST API & Socket.io Realtime Gateway
+│   │   ├── prisma/schema.prisma  # MongoDB Atlas Prisma database schema
+│   │   ├── src/
+│   │   │   ├── config/env.ts     # Zod validated API environment configuration
+│   │   │   ├── lib/              # Prisma client, BullMQ queue producer, Redis Pub/Sub, Storage
+│   │   │   ├── middleware/       # JWT Auth verification, Multer + Magic-Bytes file sniffing
+│   │   │   ├── modules/
+│   │   │   │   ├── auth/         # Email/Password + Google OAuth2 registration & login handlers
+│   │   │   │   └── media/        # Upload, paginated job query, thumbnail streamer & downloader
+│   │   │   ├── sockets/          # Socket.io gateway with JWT handshake & Redis channel subscriber
+│   │   │   ├── server.ts         # Express server factory with Helmet, CORS, and rate limiting
+│   │   │   └── index.ts          # API bootstrap entrypoint (Port 5000)
+│   │   └── Dockerfile            # Multi-stage production container for API
+│   │
+│   ├── worker/                   # Background Media Processing Worker Service
+│   │   ├── prisma/schema.prisma  # Worker Prisma schema
+│   │   ├── src/
+│   │   │   ├── config/env.ts     # Worker environment config
+│   │   │   ├── lib/              # Redis publisher, Cloudinary CDN uploader, Prisma client
+│   │   │   ├── locks/userLock.ts # Per-User FIFO distributed mutex lock with atomic Lua release
+│   │   │   ├── processors/
+│   │   │   │   ├── imageProcessor.ts # Sharp Lanczos3 + Unsharp 128x128 crop pipeline
+│   │   │   │   └── videoProcessor.ts # FFprobe duration probe & 50% midpoint frame extractor
+│   │   │   ├── worker.ts         # BullMQ queue consumer with configurable concurrency
+│   │   │   └── index.ts          # Worker bootstrap entrypoint
+│   │   └── Dockerfile            # Container with native FFmpeg & vips libraries
+│   │
+│   └── frontend/                 # Next.js 14 App Router UI Dashboard
+│       ├── src/
+│       │   ├── app/              # Next.js App Router (page.tsx, layout.tsx, globals.css)
+│       │   ├── components/       # Dropzone, JobCard, StatusBadge, AuthModal, JobPreviewModal, Navbar
+│       │   ├── hooks/useSocket.ts# Live Socket.io client updating Jotai atoms in real time
+│       │   ├── lib/api.ts        # Typed API client with JWT interceptor & download helpers
+│       │   └── state/atoms.ts    # Jotai reactive state (authAtom, jobsAtom, mediaStatsAtom, paginationAtom)
+│       ├── tailwind.config.js    # Custom dark glassmorphism styling configuration
+│       └── Dockerfile            # Multi-stage Next.js production container
+│
+├── k8s/                          # Production Kubernetes manifests (Deployments, Services, PVC, HPA)
+├── docker-compose.yml            # 5-Container topology (MongoDB, Redis, API, Worker, Frontend)
+├── turbo.json                    # Turborepo build & caching pipeline config
+├── .env.example                  # Environment variable reference template
+└── package.json                  # Root monorepo workspace orchestration
+```
+
+### 🔍 Folder & Module Breakdown
+- **`packages/types`**: Shared types and interfaces across all microservices, ensuring compile-time consistency between frontend, API, and worker.
+- **`services/api`**: Express REST API handling authentication (bcrypt + Google OAuth2), multi-file upload validation with magic-bytes sniffing, BullMQ job queuing, and WebSocket client synchronization.
+- **`services/worker`**: Standalone background consumer subscribing to BullMQ. Enforces per-user FIFO execution locks, runs Sharp/FFmpeg 128×128 image and video midpoint frame extraction, uploads to Cloudinary CDN, and publishes progress events to Redis Pub/Sub.
+- **`services/frontend`**: Next.js 14 dashboard with glassmorphic styling, Jotai atomic state management, and real-time Socket.io updates for live progress without manual refreshing.
+- **`k8s/` & `docker-compose.yml`**: Full multi-container configuration for instant local deployment and Kubernetes cloud scaling with Horizontal Pod Autoscaler (HPA).
+
+---
+
+## 🚀 4. Step-by-Step Developer Setup Guide
 
 ### Prerequisites
 - **Node.js**: `v18.0.0` or later
@@ -130,7 +197,7 @@ Everything will spin up automatically with pre-configured health checks and pers
 
 ---
 
-## 🔑 4. Credentials & Configuration Reference
+## 🔑 5. Credentials & Configuration Reference
 
 ### 👤 Demo / Test User Credentials
 For testing and review, you can use the pre-configured test account:
@@ -161,7 +228,7 @@ DATABASE_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/thumbnail_d
 
 ---
 
-## 🧪 5. Sample Assets for Testing
+## 🧪 6. Sample Assets for Testing
 
 - **📁 Google Drive Test Media Folder (Images & Videos)**: [Download Test Media Pack](https://drive.google.com/drive/folders/1slUOQFzf6hjqbeFBivdyUBhtPLVQ3aQp?usp=sharing)
 
@@ -178,7 +245,7 @@ You can also use these direct public sample files to test multi-file batch uploa
 
 ---
 
-## 🐙 6. Step-by-Step Guide to Push to GitHub
+## 🐙 7. Step-by-Step Guide to Push to GitHub
 
 Follow these steps to initialize and push this project to your GitHub account:
 
@@ -204,7 +271,7 @@ git push -u origin main
 
 ---
 
-## ☁️ 7. 100% Free Cloud Deployment Guide
+## ☁️ 8. 100% Free Cloud Deployment Guide
 
 You can host this entire distributed system for **free** using the following stack:
 
