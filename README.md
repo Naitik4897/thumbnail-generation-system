@@ -9,8 +9,8 @@ Features **Per-User FIFO Concurrency**, **Real-Time WebSocket Progress Streaming
 ## 🌐 Repository & Demo Links
 
 - **GitHub Repository**: [https://github.com/Naitik4897/thumbnail-generation-system](https://github.com/Naitik4897/thumbnail-generation-system)
-- **Live Frontend Dashboard**: *Deployable on Vercel (See Deployment Guide below)*
-- **API & Realtime Gateway**: *Deployable on Render / Railway*
+- **Live Frontend Dashboard**: [https://thumbnail-generation-system-fronten.vercel.app](https://thumbnail-generation-system-fronten.vercel.app)
+- **Live Backend API & Realtime Gateway**: [https://servicesapi-production-5832.up.railway.app](https://servicesapi-production-5832.up.railway.app)
 
 ---
 

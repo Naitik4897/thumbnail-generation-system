@@ -23,7 +23,22 @@ export function createServer() {
 
   app.use(
     cors({
-      origin: [env.FRONTEND_URL, 'http://localhost:3000', '*'],
+      origin: (origin, callback) => {
+        // allow requests with no origin (like curl, mobile, server-to-server)
+        if (!origin) return callback(null, true);
+
+        // Allow localhost, custom frontend URL, and any vercel.app deployments
+        if (
+          origin === env.FRONTEND_URL ||
+          origin.startsWith('http://localhost:') ||
+          origin.endsWith('.vercel.app') ||
+          origin.includes('thumbnail-generation-system-fronten')
+        ) {
+          return callback(null, true);
+        }
+
+        return callback(null, true);
+      },
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       credentials: true,
     })

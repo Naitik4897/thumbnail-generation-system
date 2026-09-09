@@ -11,7 +11,9 @@ export class SocketGateway {
   public static initialize(httpServer: HttpServer): SocketIOServer {
     this.io = new SocketIOServer(httpServer, {
       cors: {
-        origin: [env.FRONTEND_URL, 'http://localhost:3000', '*'],
+        origin: (origin, callback) => {
+          callback(null, true);
+        },
         methods: ['GET', 'POST'],
         credentials: true,
       },
