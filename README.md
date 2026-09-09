@@ -163,7 +163,9 @@ DATABASE_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/thumbnail_d
 
 ## 🧪 5. Sample Assets for Testing
 
-You can use these public sample files to test multi-file batch uploads, high-clarity image resizing, and video midpoint frame extraction:
+- **📁 Google Drive Test Media Folder (Images & Videos)**: [Download Test Media Pack](https://drive.google.com/drive/folders/1slUOQFzf6hjqbeFBivdyUBhtPLVQ3aQp?usp=sharing)
+
+You can also use these direct public sample files to test multi-file batch uploads, high-clarity image resizing, and video midpoint frame extraction:
 
 ### Sample Images:
 - **PNG (High Resolution Graphic)**: `https://raw.githubusercontent.com/mdn/learning-area/main/html/multimedia-and-embedding/images-in-html/dinosaur_600.png`
