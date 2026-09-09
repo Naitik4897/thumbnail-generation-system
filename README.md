@@ -132,6 +132,11 @@ Everything will spin up automatically with pre-configured health checks and pers
 
 ## 🔑 4. Credentials & Configuration Reference
 
+### 👤 Demo / Test User Credentials
+For testing and review, you can use the pre-configured test account:
+- **Email**: `nrmaisuriya3@gmail.com`
+- **Password**: `Naitik@1234`
+
 ### Cloudinary CDN Configuration
 ```env
 STORAGE_STRATEGY=cloudinary
